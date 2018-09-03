@@ -2,11 +2,24 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro"
        name="ur5" >
 
+  <property name="prefix" value=""/>
+  <property name="M_PI" value="3.14159265359" />
+
   <!-- common stuff -->
   <xacro:include filename="$(find ur_description)/urdf/common.gazebo.xacro" />
 
   <!-- ur5 -->
   <xacro:include filename="$(find ur_description)/urdf/ur5.urdf.xacro" />
+
+  <!-- photoneo camera -->
+  <xacro:include filename="$(find phoxi_camera)/urdf/PhoXi3Dscanner_values.xacro"/> <!--Scanner values-->
+  <xacro:include filename="$(find phoxi_camera)/urdf/PhoXi3Dscanner_macro.xacro"/>  <!--Scanner macro-->
+
+  <!-- workplatform-->
+  <xacro:include filename="$(find ur_description)/urdf/platform.urdf.xacro" />
+
+  <!-- rg2 gripper -->
+  <xacro:include filename="$(find ur_description)/urdf/rg2.urdf.xacro" />
 
   <!-- arm -->
   <xacro:ur5_robot prefix="" joint_limited="true"
@@ -22,8 +35,25 @@
 
   <joint name="world_joint" type="fixed">
     <parent link="world" />
-    <child link = "base_link" />
+    <child link = "box" />
     <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
   </joint>
+
+  <!-- rg2 pipe -->
+  <!-- <xacro:rg2 prefix="${prefix}"/> -->
+
+
+  <!-- photoneo camare -->
+  <xacro:PhoXi3Dscanner scanner_parent = "base_link" scanner_name = "PhoXi3Dscanner" sensor_parent = "PhoXi3Dscanner" sensor_name = "PhoXi3Dscanner_sensor" >
+      <origin xyz="0.075 0.928 0.535" rpy="${pi-pi/6-pi/50} 0.02 0" /> <!--PhoXi3Dscanner origin-->
+      <xacro:PhoXi3DscannerS_default_sensor_origin /> <!--Extrinsic calibration data-->
+      <xacro:PhoXi3DscannerS_meshes /> <!--meshes-->
+  </xacro:PhoXi3Dscanner>
+
+  <!-- workplatform -->
+  <xacro:boxbase child="base_link" >
+    <origin xyz="0.0 0.0 ${boxz}" rpy="0.0 0.0 0.0"/>
+  </xacro:boxbase>
+
 
 </robot>

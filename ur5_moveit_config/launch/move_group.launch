@@ -1,5 +1,5 @@
 <launch>
-  <arg name="limited" default="false"/>
+  <arg name="limited" default="true"/>
 
   <include file="$(find ur5_moveit_config)/launch/planning_context.launch">
     <arg name="limited" value="$(arg limited)" />
@@ -36,7 +36,7 @@
 
   <!-- Sensors Functionality -->
   <include ns="move_group" file="$(find ur5_moveit_config)/launch/sensor_manager.launch.xml" if="$(arg allow_trajectory_execution)">
-    <arg name="moveit_sensor_manager" value="ur5" /> 
+    <arg name="moveit_sensor_manager" value="ur5" />
   </include>
 
   <!-- Start the actual move_group node/action server -->
@@ -48,9 +48,17 @@
     <param name="max_safe_path_cost" value="$(arg max_safe_path_cost)"/>
     <param name="jiggle_fraction" value="$(arg jiggle_fraction)" />
 
+    <!-- load these non-default MoveGroup capabilities -->
+    <!--
+    <param name="capabilities" value="
+                  a_package/AwsomeMotionPlanningCapability
+                  another_package/GraspPlanningPipeline
+                  " />
+    -->
+
     <!-- MoveGroup capabilities to load -->
     <param name="capabilities" value="move_group/MoveGroupCartesianPathService
-				      move_group/MoveGroupExecuteService
+				      move_group/MoveGroupExecuteTrajectoryAction
 				      move_group/MoveGroupKinematicsService
 				      move_group/MoveGroupMoveAction
 				      move_group/MoveGroupPickPlaceAction
